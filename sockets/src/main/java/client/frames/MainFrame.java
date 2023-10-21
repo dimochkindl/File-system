@@ -160,12 +160,17 @@ public class MainFrame extends JFrame {
 
         deleteButton.addActionListener(e ->{
             if(serverList.getSelectedValue() != null){
-
-            } else if (clientList != null) {
-
+                if(!manager.deleteFile(serverList.getSelectedValue())){
+                    showError("error deleting file from server");
+                }
+            } else if (clientList.getSelectedValue() != null) {
+                if(!clientManager.deleteFile(clientList.getSelectedValue())){
+                    showError("error deleting file from client");
+                }
             }else{
-
+                showError("No file was chosen");
             }
+            updateServerList();
         });
     }
 

@@ -1,7 +1,6 @@
 package server.files_operations;
 
 import server.db_operations.FileManagerDatabase;
-import users.User;
 
 import java.io.*;
 import java.net.Socket;
@@ -10,13 +9,11 @@ import java.util.List;
 
 public class OperationsHandler implements FilesOperations {
 
+    private final int userId;
+    private final Socket socket;
+    private final FileManagerDatabase fileManagerDatabase;
     private DataInputStream in;
     private DataOutputStream out;
-    private final int userId;
-
-    private final Socket socket;
-
-    private final FileManagerDatabase fileManagerDatabase;
 
     public OperationsHandler(DataInputStream in, DataOutputStream out, int userId, Socket socket) {
         this.userId = userId;
@@ -33,7 +30,7 @@ public class OperationsHandler implements FilesOperations {
         if (!file.exists()) {
             file.createNewFile();
             out.writeUTF("ok");
-        }else{
+        } else {
             out.writeUTF("exists");
             return 1;
         }
@@ -55,31 +52,33 @@ public class OperationsHandler implements FilesOperations {
 
     @Override
     public void download() {
-        try{
+        try {
             String filename = in.readUTF();
             List<String> availableFiles = fileManagerDatabase.listOfFiles();
-            if(availableFiles.contains(filename)){
+            if (availableFiles.contains(filename)) {
                 out.writeBoolean(true);
-            }else{
+            } else {
                 out.writeBoolean(false);
             }
             File file = new File("server" + File.separator + filename);
-            if(!file.exists()){{
-                throw new IOException("Can't create file(OperationsHandler.download)");
-            }}
+            if (!file.exists()) {
+                {
+                    throw new IOException("Can't create file(OperationsHandler.download)");
+                }
+            }
 
             out.writeLong(file.length());
             FileInputStream fileInputStream = new FileInputStream(file);
             int read = 0;
             byte[] buffer = new byte[256];
-            while((read = fileInputStream.read(buffer)) != -1){
+            while ((read = fileInputStream.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
             }
             fileInputStream.close();
             out.flush();
             fileManagerDatabase.increaseDownloadFiles();
 
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,7 +87,28 @@ public class OperationsHandler implements FilesOperations {
 
     @Override
     public void delete() {
+        try {
+            String filename = in.readUTF();
+            List<String> availableFiles = fileManagerDatabase.listOfFiles();
+            if (availableFiles.contains(filename)) {
+                out.writeBoolean(true);
+            } else {
+                out.writeBoolean(false);
+            }
+            File file = new File("server" + File.separator + filename);
+            boolean fromServer = false;
+            if (file.exists()) {
+                fromServer = file.delete();
+            } else {
+                System.out.println("file doesn't exists on server site");
+            }
+            out.writeBoolean((fileManagerDatabase.deleteFile(filename) && fromServer));
 
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
     }
 
     @Override
@@ -101,7 +121,7 @@ public class OperationsHandler implements FilesOperations {
 
     }
 
-    public void showServerFilesList(){
+    public void showServerFilesList() {
         List<String> filesList;
         try {
             filesList = fileManagerDatabase.listOfFiles();

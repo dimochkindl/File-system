@@ -34,6 +34,12 @@ public class ClientFilesManager implements ClientFilesOperations {
 
     @Override
     public boolean deleteFile(String filename) {
+        File file = new File("client"+File.separator+filename);
+        if(file.exists()){
+            return file.delete();
+        }else{
+            System.out.println("doesn't exists");
+        }
         return false;
     }
 

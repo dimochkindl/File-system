@@ -88,7 +88,21 @@ public class FilesManager implements ServerFilesOperations {
 
     @Override
     public boolean deleteFile(String filename) {
-        return true;
+        try{
+            out.writeUTF("delete");
+            out.writeUTF(filename);
+            Boolean serverConsistsFile = in.readBoolean();
+            if (!serverConsistsFile) {
+                System.out.println("Server doesn't consists file(deleteFile - FilesManager)");
+                return false;
+            }
+            if(in.readBoolean()){
+                return true;
+            }
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+        return false;
     }
 
     @Override

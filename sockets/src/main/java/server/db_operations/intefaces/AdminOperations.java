@@ -1,6 +1,6 @@
 package server.db_operations.intefaces;
 
-public interface IAdminOperations extends IFileOperationsInDB, IUsersOperations{
+public interface AdminOperations extends FileOperationsInDB, UsersOperations {
     public boolean changeAdminPassword();
 
     public String getAdminPassword();

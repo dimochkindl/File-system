@@ -1,7 +1,7 @@
 package server.db_operations;
 
 import org.apache.tika.Tika;
-import server.db_operations.intefaces.IFileOperationsInDB;
+import server.db_operations.intefaces.FileOperationsInDB;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileManagerDatabase implements IFileOperationsInDB {
+public class FileManagerDatabase implements FileOperationsInDB {
 
     private Connector connector;
 
@@ -45,9 +45,18 @@ public class FileManagerDatabase implements IFileOperationsInDB {
     }
 
     @Override
-    public void deleteFile() {
-
+    public boolean deleteFile(String filename) {
+        try (Connection connection = connector.getConnection();
+             PreparedStatement statement = connection.prepareStatement("DELETE FROM files_info WHERE filename = ?")) {
+            statement.setString(1, filename);
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
+
 
     @Override
     public List<String> listOfFiles() throws SQLException {

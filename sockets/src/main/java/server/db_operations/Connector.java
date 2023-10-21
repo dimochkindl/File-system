@@ -1,13 +1,13 @@
 package server.db_operations;
 
-import server.db_operations.intefaces.ITablesCreator;
+import server.db_operations.intefaces.TablesCreator;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Connector implements ITablesCreator {
+public class Connector implements TablesCreator {
 
     public Connection getConnection() {
         final String url = "jdbc:postgresql://localhost:5432/file_manager_system";

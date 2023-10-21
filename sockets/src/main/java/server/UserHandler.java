@@ -83,7 +83,7 @@ public class UserHandler implements Runnable {
 
             }
             if ("delete".equals(command)) {
-
+                handler.delete();
             }
             if("showFilesList".equals(command)){
                 handler.showServerFilesList();
