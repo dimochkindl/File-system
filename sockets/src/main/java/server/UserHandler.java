@@ -77,7 +77,7 @@ public class UserHandler implements Runnable {
                 handler.download();
             }
             if ("read".equals(command)) {
-
+                handler.read();
             }
             if ("write".equals(command)) {
 

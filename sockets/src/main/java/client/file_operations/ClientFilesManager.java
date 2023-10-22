@@ -2,9 +2,11 @@ package client.file_operations;
 
 import client.file_operations.interfaces.ClientFilesOperations;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClientFilesManager implements ClientFilesOperations {
     @Override
@@ -45,6 +47,20 @@ public class ClientFilesManager implements ClientFilesOperations {
 
     @Override
     public List<String> readFile(String filename) {
+        File file = new File("client" + File.separator+ filename);
+        try {
+            BufferedReader fileReader = new BufferedReader(new FileReader(file));
+            List<String> readFile = new LinkedList<>();
+            String line;
+            while ((line = fileReader.readLine()) != null) {
+                readFile.add(line);
+            }
+            return readFile;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

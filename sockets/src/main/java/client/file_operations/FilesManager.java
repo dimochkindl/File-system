@@ -4,7 +4,10 @@ import client.file_operations.interfaces.ServerFilesOperations;
 
 import java.io.*;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FilesManager implements ServerFilesOperations {
@@ -88,7 +91,7 @@ public class FilesManager implements ServerFilesOperations {
 
     @Override
     public boolean deleteFile(String filename) {
-        try{
+        try {
             out.writeUTF("delete");
             out.writeUTF(filename);
             Boolean serverConsistsFile = in.readBoolean();
@@ -96,10 +99,10 @@ public class FilesManager implements ServerFilesOperations {
                 System.out.println("Server doesn't consists file(deleteFile - FilesManager)");
                 return false;
             }
-            if(in.readBoolean()){
+            if (in.readBoolean()) {
                 return true;
             }
-        }catch(IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
         return false;
@@ -107,6 +110,24 @@ public class FilesManager implements ServerFilesOperations {
 
     @Override
     public List<String> readFile(String filename) {
+        List<String> readData = new LinkedList<>();
+        try {
+            out.writeUTF("read");
+            out.writeUTF(filename);
+            int bytesRead;
+            if ((bytesRead = in.readInt()) != -1) {
+                byte[] buffer = new byte[bytesRead];
+                in.readFully(buffer);
+                String text = new String(buffer, StandardCharsets.UTF_8);
+                String[] textLines = text.split(System.lineSeparator());
+                readData.addAll(Arrays.asList(textLines));
+            }else{
+                return null;
+            }
+            return readData;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

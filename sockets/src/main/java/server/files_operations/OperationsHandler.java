@@ -112,9 +112,20 @@ public class OperationsHandler implements FilesOperations {
     }
 
     @Override
-    public void read() {
+    public void read() throws IOException {
+        String filename = in.readUTF();
+        File file = new File("server" + File.separator + filename);
+        FileInputStream fis = new FileInputStream(file);
+        int length = (int) file.length();
+        byte[] buffer = new byte[length];
+        int bytesRead;
+        while ((bytesRead = fis.read(buffer)) != -1) {
+            out.writeInt(bytesRead);
+            out.write(buffer, 0, bytesRead);
+        }
 
     }
+
 
     @Override
     public void write() {
@@ -132,7 +143,7 @@ public class OperationsHandler implements FilesOperations {
                 out.writeUTF(name);
             }
         } catch (SQLException | IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("error in show files");
         }
     }
 

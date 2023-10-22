@@ -17,7 +17,7 @@ public class MainFrame extends JFrame {
     private final JButton uploadButton;
     private final JButton downloadButton, readButton, writeButton, deleteButton;
     private DefaultListModel serverListModel, clientListModel;
-    private JTextArea filenameArea;
+    private JTextArea updateArea;
     private JList<String> serverList, clientList;
 
 
@@ -55,13 +55,13 @@ public class MainFrame extends JFrame {
         JPanel inputPanel = new JPanel(new BorderLayout());
         mainPanel.add(inputPanel, BorderLayout.NORTH);
 
-        filenameArea = new JTextArea(3, 30);
-        inputPanel.add(filenameArea, BorderLayout.CENTER);
+        updateArea = new JTextArea(3, 30);
+        inputPanel.add(updateArea, BorderLayout.CENTER);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createClientJListPanel(), createServerJListPanel());
         splitPane.setDividerLocation(145);
 
-        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, filenameArea, splitPane);
+        JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, updateArea, splitPane);
         mainSplitPane.setDividerLocation(190);
 
         mainPanel.add(mainSplitPane, BorderLayout.CENTER);
@@ -133,6 +133,15 @@ public class MainFrame extends JFrame {
                 clientList.setSelectedValue(curr, false);
             }
         });
+
+        Timer oneMoreTimer = new Timer(delay, e -> {
+            String curr = serverList.getSelectedValue();
+            if(updateServerList(curr)) {
+                serverList.setSelectedValue(curr, false);
+            }
+        });
+
+        oneMoreTimer.start();
         timer.start();
 
         uploadButton.addActionListener(e -> {
@@ -142,7 +151,6 @@ public class MainFrame extends JFrame {
             } else if (status.equals("File doesn't exist")) {
                 showError("File doesn't exist");
             }
-            updateServerList();
         });
 
         downloadButton.addActionListener(e -> {
@@ -168,9 +176,29 @@ public class MainFrame extends JFrame {
                     showError("error deleting file from client");
                 }
             }else{
-                showError("No file was chosen");
+                showError("No file was chosen to delete");
             }
-            updateServerList();
+        });
+
+        readButton.addActionListener(e->{
+            if(clientList.getSelectedValue() != null){
+                List<String> readFile = clientManager.readFile(clientList.getSelectedValue());
+                if(readFile == null){
+                    showError("Can't read from empty file");
+                }
+                readFile.forEach(t->updateArea.append(t+"\n"));
+                updateArea.setEditable(false);
+            } else if (serverList.getSelectedValue() != null) {
+                updateArea.setText(null);
+                List<String> readFile = manager.readFile(serverList.getSelectedValue());
+                if(readFile == null){
+                    showError("Can't read from empty file");
+                }
+                readFile.forEach(t->updateArea.append(t+"\n"));
+                updateArea.setEditable(false);
+            }else{
+                showError("No file was chosen to read from");
+            }
         });
     }
 
@@ -178,7 +206,7 @@ public class MainFrame extends JFrame {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
-    private void updateServerList() {
+    private boolean updateServerList(String curr) {
         serverListModel.clear();
         List<String> files = manager.showFiles();
 
@@ -187,6 +215,10 @@ public class MainFrame extends JFrame {
         }
 
         serverList.revalidate();
+        if(files.contains(curr)){
+            return true;
+        }
+        return false;
     }
 
     public boolean updateClientFileList(String curr) {

@@ -10,6 +10,7 @@ public class EmailFrame extends JFrame {
     private JButton confirmButton;
 
     EmailFrame() throws ParseException {
+        setResizable(false);
         setTitle("Confirm the email");
         setLocationRelativeTo(null);
         confirmButton = new JButton("Confirm");

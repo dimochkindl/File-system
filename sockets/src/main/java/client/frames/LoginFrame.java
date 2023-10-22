@@ -18,6 +18,7 @@ public class LoginFrame extends JFrame {
     private final JButton registerButton;
 
     public LoginFrame(Socket socket, DataInputStream in, DataOutputStream out) {
+        setResizable(false);
         this.socket = socket;
         this.in = in;
         this.out = out;
