@@ -4,10 +4,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface FileOperationsInDB {
-    public void addFile(String filename, int userId);
+    void addFile(String filename, int userId);
 
-    public boolean deleteFile(String filename);
+    boolean deleteFile(String filename);
 
-    public List<String> listOfFiles() throws SQLException;
+    List<String> listOfFiles() throws SQLException;
 
 }

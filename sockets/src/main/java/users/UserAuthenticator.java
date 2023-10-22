@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class UserAuthenticator {
-    private String username;
-    private String password;
+    private final String username;
+    private final String password;
 
     private int userId;
 
@@ -59,11 +59,7 @@ public class UserAuthenticator {
             return false;
         }
 
-        if (!foundPassword.equals(password)) {
-            return false;
-        }
-
-        return true;
+        return foundPassword.equals(password);
     }
 
 }

@@ -7,14 +7,14 @@ import java.util.Vector;
 
 public interface UsersOperations {
 
-    public Vector getUsers();
+    Vector getUsers();
 
-    public Map getFilesWithDate();
+    Map getFilesWithDate();
 
-    public Vector getUsersFiles();
+    Vector getUsersFiles();
 
-    public User deleteUser();
+    User deleteUser();
 
-    public boolean addUser();
+    boolean addUser();
 
 }

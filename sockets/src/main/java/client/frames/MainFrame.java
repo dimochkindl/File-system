@@ -215,10 +215,7 @@ public class MainFrame extends JFrame {
         }
 
         serverList.revalidate();
-        if(files.contains(curr)){
-            return true;
-        }
-        return false;
+        return files.contains(curr);
     }
 
     public boolean updateClientFileList(String curr) {
@@ -232,9 +229,6 @@ public class MainFrame extends JFrame {
         clientList.revalidate();
         clientList.repaint();
 
-        if(files.contains(curr)){
-           return true;
-        }
-        return false;
+        return files.contains(curr);
     }
 }

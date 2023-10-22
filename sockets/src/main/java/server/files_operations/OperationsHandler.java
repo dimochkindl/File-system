@@ -12,8 +12,8 @@ public class OperationsHandler implements FilesOperations {
     private final int userId;
     private final Socket socket;
     private final FileManagerDatabase fileManagerDatabase;
-    private DataInputStream in;
-    private DataOutputStream out;
+    private final DataInputStream in;
+    private final DataOutputStream out;
 
     public OperationsHandler(DataInputStream in, DataOutputStream out, int userId, Socket socket) {
         this.userId = userId;
@@ -55,11 +55,7 @@ public class OperationsHandler implements FilesOperations {
         try {
             String filename = in.readUTF();
             List<String> availableFiles = fileManagerDatabase.listOfFiles();
-            if (availableFiles.contains(filename)) {
-                out.writeBoolean(true);
-            } else {
-                out.writeBoolean(false);
-            }
+            out.writeBoolean(availableFiles.contains(filename));
             File file = new File("server" + File.separator + filename);
             if (!file.exists()) {
                 {
@@ -90,11 +86,7 @@ public class OperationsHandler implements FilesOperations {
         try {
             String filename = in.readUTF();
             List<String> availableFiles = fileManagerDatabase.listOfFiles();
-            if (availableFiles.contains(filename)) {
-                out.writeBoolean(true);
-            } else {
-                out.writeBoolean(false);
-            }
+            out.writeBoolean(availableFiles.contains(filename));
             File file = new File("server" + File.separator + filename);
             boolean fromServer = false;
             if (file.exists()) {

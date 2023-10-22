@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FileManagerDatabase implements FileOperationsInDB {
 
-    private Connector connector;
+    private final Connector connector;
 
     public FileManagerDatabase() {
         connector = new Connector();

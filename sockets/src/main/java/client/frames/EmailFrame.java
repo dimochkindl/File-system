@@ -6,8 +6,8 @@ import java.awt.*;
 import java.text.ParseException;
 
 public class EmailFrame extends JFrame {
-    private JFormattedTextField codeField;
-    private JButton confirmButton;
+    private final JFormattedTextField codeField;
+    private final JButton confirmButton;
 
     EmailFrame() throws ParseException {
         setResizable(false);
