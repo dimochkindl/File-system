@@ -1,3 +1,3 @@
 example.txt
-try to check
-uudsf
+checking write method
+Work?

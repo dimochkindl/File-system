@@ -6,5 +6,5 @@ public interface ClientFilesOperations {
     List<String> showUserFiles();
     boolean deleteFile(String filename);
     List<String> readFile(String filename);
-    List<String> writeFile(String filename);
+    void writeFile(String filename, String text);
 }

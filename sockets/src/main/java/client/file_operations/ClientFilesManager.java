@@ -65,7 +65,19 @@ public class ClientFilesManager implements ClientFilesOperations {
     }
 
     @Override
-    public List<String> writeFile(String filename) {
-        return null;
+    public void writeFile(String filename, String text) {
+        File file = new File("client" + File.separator + filename);
+        try (FileOutputStream fos = new FileOutputStream(file, true)) {
+            byte[] toWrite = text.getBytes("UTF-8");
+            fos.write(10);
+            fos.write(toWrite);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 }

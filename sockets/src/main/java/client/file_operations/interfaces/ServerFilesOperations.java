@@ -7,5 +7,5 @@ public interface ServerFilesOperations {
     String downloadFile(String filename);
     boolean deleteFile(String filename);
     List<String> readFile(String filename);
-    List<String> writeFile(String filename);
+    boolean writeFile(String filename, String text);
 }

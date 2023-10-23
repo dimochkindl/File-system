@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 
     private final ClientFilesManager clientManager;
     private final JButton uploadButton;
-    private final JButton downloadButton, readButton, writeButton, deleteButton;
+    private final JButton downloadButton, readButton, writeButton, deleteButton, updateButton, clearButton;
     private DefaultListModel serverListModel, clientListModel;
     private JTextArea updateArea;
     private JList<String> serverList, clientList;
@@ -31,12 +31,17 @@ public class MainFrame extends JFrame {
         readButton = new JButton("Read");
         writeButton = new JButton("Write");
         deleteButton = new JButton("Delete");
+        updateButton = new JButton("Update");
+        clearButton = new JButton("Clear");
+
 
         uploadButton.setFont(new Font("Arial", Font.PLAIN, 12));
         downloadButton.setFont(new Font("Arial", Font.PLAIN, 12));
         readButton.setFont(new Font("Arial", Font.PLAIN, 12));
         writeButton.setFont(new Font("Arial", Font.PLAIN, 12));
         deleteButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        updateButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        clearButton.setFont(new Font("Arial", Font.PLAIN, 12));
 
         setFunctions();
         setUI();
@@ -59,28 +64,41 @@ public class MainFrame extends JFrame {
         inputPanel.add(updateArea, BorderLayout.CENTER);
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, createClientJListPanel(), createServerJListPanel());
+        splitPane.setEnabled(false);
         splitPane.setDividerLocation(145);
 
         JSplitPane mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, updateArea, splitPane);
+        mainSplitPane.setEnabled(false);
         mainSplitPane.setDividerLocation(190);
 
         mainPanel.add(mainSplitPane, BorderLayout.CENTER);
 
-        JPanel buttonPanelUp = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        JPanel buttonPanelUp = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 3));
+        JPanel buttonPanelDown = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 3));
+        JSplitPane buttonSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, buttonPanelUp, buttonPanelDown);
+        buttonSplitPane.setEnabled(false);
+        mainPanel.add(buttonSplitPane, BorderLayout.SOUTH);
 
-        mainPanel.add(buttonPanelUp, BorderLayout.AFTER_LAST_LINE);
+        clearButton.setPreferredSize(new Dimension(90, 25));
+        uploadButton.setPreferredSize(new Dimension(90, 25));
+        downloadButton.setPreferredSize(new Dimension(90, 25));
+        readButton.setPreferredSize(new Dimension(90, 25));
 
-        uploadButton.setPreferredSize(new Dimension(75, 30));
-        downloadButton.setPreferredSize(new Dimension(90, 30));
-        readButton.setPreferredSize(new Dimension(75, 30));
-        writeButton.setPreferredSize(new Dimension(75, 30));
-        deleteButton.setPreferredSize(new Dimension(75, 30));
+        writeButton.setPreferredSize(new Dimension(95, 25));
+        deleteButton.setPreferredSize(new Dimension(95, 25));
+        updateButton.setPreferredSize(new Dimension(95, 25));
+
+
+        buttonPanelUp.add(clearButton);
 
         buttonPanelUp.add(uploadButton);
+        buttonPanelDown.add(updateButton);
+
         buttonPanelUp.add(downloadButton);
+        buttonPanelDown.add(deleteButton);
+
         buttonPanelUp.add(readButton);
-        buttonPanelUp.add(writeButton);
-        buttonPanelUp.add(deleteButton);
+        buttonPanelDown.add(writeButton);
     }
 
     private JPanel createServerJListPanel() {
@@ -126,6 +144,13 @@ public class MainFrame extends JFrame {
 
     private void setFunctions() {
 
+        setClearButtonListener();
+        setWriteButtonListener();
+        setUploadButtonListener();
+        setDownloadButtonListener();
+        setDeleteButtonListener();
+        setReadButtonListener();
+
         int delay = 8000;
         Timer timer = new Timer(delay, e -> {
             String curr = clientList.getSelectedValue();
@@ -143,7 +168,27 @@ public class MainFrame extends JFrame {
 
         oneMoreTimer.start();
         timer.start();
+    }
 
+    private void setClearButtonListener(){
+        clearButton.addActionListener(e->{
+            updateArea.setText("");
+        });
+    }
+
+    private void setWriteButtonListener(){
+        writeButton.addActionListener(e->{
+            if(clientList.getSelectedValue() != null){
+                clientManager.writeFile(clientList.getSelectedValue(), updateArea.getText());
+            } else if (serverList.getSelectedValue() != null) {
+                manager.writeFile(serverList.getSelectedValue(), updateArea.getText());
+            }else{
+                showError("No file was chosen to write into");
+            }
+        });
+    }
+
+    private void setUploadButtonListener(){
         uploadButton.addActionListener(e -> {
             String status = manager.uploadFile(clientList.getSelectedValue());
             if (status == null) {
@@ -152,7 +197,9 @@ public class MainFrame extends JFrame {
                 showError("File doesn't exist");
             }
         });
+    }
 
+    private void setDownloadButtonListener(){
         downloadButton.addActionListener(e -> {
             if (serverList.getSelectedValue() == null) {
                 System.out.println("download value is null");
@@ -165,7 +212,9 @@ public class MainFrame extends JFrame {
                 }
             }
         });
+    }
 
+    private void setDeleteButtonListener(){
         deleteButton.addActionListener(e ->{
             if(serverList.getSelectedValue() != null){
                 if(!manager.deleteFile(serverList.getSelectedValue())){
@@ -179,7 +228,9 @@ public class MainFrame extends JFrame {
                 showError("No file was chosen to delete");
             }
         });
+    }
 
+    private void setReadButtonListener(){
         readButton.addActionListener(e->{
             if(clientList.getSelectedValue() != null){
                 List<String> readFile = clientManager.readFile(clientList.getSelectedValue());
@@ -187,15 +238,13 @@ public class MainFrame extends JFrame {
                     showError("Can't read from empty file");
                 }
                 readFile.forEach(t->updateArea.append(t+"\n"));
-                updateArea.setEditable(false);
             } else if (serverList.getSelectedValue() != null) {
-                updateArea.setText(null);
+                updateArea.setText("");
                 List<String> readFile = manager.readFile(serverList.getSelectedValue());
                 if(readFile == null){
                     showError("Can't read from empty file");
                 }
                 readFile.forEach(t->updateArea.append(t+"\n"));
-                updateArea.setEditable(false);
             }else{
                 showError("No file was chosen to read from");
             }
@@ -217,6 +266,8 @@ public class MainFrame extends JFrame {
         serverList.revalidate();
         return files.contains(curr);
     }
+
+
 
     public boolean updateClientFileList(String curr) {
         clientListModel.clear();

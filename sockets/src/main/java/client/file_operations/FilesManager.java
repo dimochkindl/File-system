@@ -132,8 +132,15 @@ public class FilesManager implements ServerFilesOperations {
     }
 
     @Override
-    public List<String> writeFile(String filename) {
-        return null;
+    public boolean writeFile(String filename, String text) {
+        try{
+            out.writeUTF("write");
+            out.writeUTF(filename);
+            out.writeUTF(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public List<String> showFiles() {

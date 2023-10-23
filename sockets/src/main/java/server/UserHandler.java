@@ -80,13 +80,16 @@ public class UserHandler implements Runnable {
                 handler.read();
             }
             if ("write".equals(command)) {
-
+                handler.write();
             }
             if ("delete".equals(command)) {
                 handler.delete();
             }
             if("showFilesList".equals(command)){
                 handler.showServerFilesList();
+            }
+            if("update".equals(command)){
+
             }
         }
     }
