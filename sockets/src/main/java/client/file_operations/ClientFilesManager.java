@@ -80,4 +80,20 @@ public class ClientFilesManager implements ClientFilesOperations {
         }
     }
 
+    @Override
+    public void updateFile(String filename, String text) {
+        File file = new File("client" + File.separator + filename);
+        try (FileOutputStream fos = new FileOutputStream(file, false)) {
+            byte[] toWrite = text.getBytes("UTF-8");
+            fos.write(10);
+            fos.write(toWrite);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

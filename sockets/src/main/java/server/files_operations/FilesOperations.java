@@ -8,4 +8,5 @@ public interface FilesOperations {
     void delete() throws IOException;
     void read() throws IOException;
     void write() throws IOException;
+    void update() throws IOException;
 }

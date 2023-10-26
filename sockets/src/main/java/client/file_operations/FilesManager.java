@@ -137,6 +137,20 @@ public class FilesManager implements ServerFilesOperations {
             out.writeUTF("write");
             out.writeUTF(filename);
             out.writeUTF(text);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateFile(String filename, String text) {
+        try{
+            out.writeUTF("update");
+            out.writeUTF(filename);
+            out.writeUTF(text);
+            return true;
         } catch (IOException e) {
             e.printStackTrace();
         }

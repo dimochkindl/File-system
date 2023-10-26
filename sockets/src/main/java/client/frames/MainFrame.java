@@ -150,6 +150,7 @@ public class MainFrame extends JFrame {
         setDownloadButtonListener();
         setDeleteButtonListener();
         setReadButtonListener();
+        setUpdateButtonListener();
 
         int delay = 8000;
         Timer timer = new Timer(delay, e -> {
@@ -181,7 +182,9 @@ public class MainFrame extends JFrame {
             if(clientList.getSelectedValue() != null){
                 clientManager.writeFile(clientList.getSelectedValue(), updateArea.getText());
             } else if (serverList.getSelectedValue() != null) {
-                manager.writeFile(serverList.getSelectedValue(), updateArea.getText());
+                if(!manager.writeFile(serverList.getSelectedValue(), updateArea.getText())){
+                    showError("Smth wrong with write to file");
+                }
             }else{
                 showError("No file was chosen to write into");
             }
@@ -251,6 +254,20 @@ public class MainFrame extends JFrame {
         });
     }
 
+    private void setUpdateButtonListener(){
+        updateButton.addActionListener(e->{
+            if(clientList.getSelectedValue() != null){
+                clientManager.updateFile(clientList.getSelectedValue(), updateArea.getText());
+            } else if (serverList.getSelectedValue() != null) {
+                if(!manager.updateFile(serverList.getSelectedValue(), updateArea.getText())){
+                    showError("Smth wrong with write to file");
+                }
+            }else{
+                showError("No file was chosen to write into");
+            }
+        });
+    }
+
     private void showError(String message) {
         JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
@@ -282,4 +299,5 @@ public class MainFrame extends JFrame {
 
         return files.contains(curr);
     }
+
 }

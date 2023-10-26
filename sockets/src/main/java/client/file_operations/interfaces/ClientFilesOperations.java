@@ -7,4 +7,7 @@ public interface ClientFilesOperations {
     boolean deleteFile(String filename);
     List<String> readFile(String filename);
     void writeFile(String filename, String text);
+
+    void updateFile(String filename, String text);
+
 }

@@ -8,4 +8,5 @@ public interface ServerFilesOperations {
     boolean deleteFile(String filename);
     List<String> readFile(String filename);
     boolean writeFile(String filename, String text);
+    boolean updateFile(String filename, String text);
 }

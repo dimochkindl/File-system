@@ -143,6 +143,29 @@ public class OperationsHandler implements FilesOperations {
         }
     }
 
+    @Override
+    public void update() throws IOException {
+        File file = null;
+        String text = null;
+        try {
+            file = new File("server" + File.separator + in.readUTF());
+            text = in.readUTF();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(file, false)) {
+            byte[] toWrite = text.getBytes("UTF-8");
+            fos.write(toWrite);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void showServerFilesList() {
         List<String> filesList;
         try {

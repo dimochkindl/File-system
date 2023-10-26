@@ -89,7 +89,7 @@ public class UserHandler implements Runnable {
                 handler.showServerFilesList();
             }
             if("update".equals(command)){
-
+                handler.update();
             }
         }
     }
