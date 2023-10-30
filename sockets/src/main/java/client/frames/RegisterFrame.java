@@ -84,6 +84,7 @@ public class RegisterFrame extends JFrame {
 
     private void performRegister() {
         try {
+            out.writeUTF("register");
             out.writeUTF(usernameField.getText());
             out.writeUTF(passwordField.getText());
             out.writeUTF(emailField.getText());
@@ -92,15 +93,7 @@ public class RegisterFrame extends JFrame {
             if (answer.equals("fail")) {
                 Error();
             } else if (answer.equals("success")) {
-
-                SwingUtilities.invokeLater(() -> {
-                    SwingUtilities.invokeLater(() -> new MainFrame(socket).setVisible(true));
-
-                    Window currentWindow = SwingUtilities.windowForComponent(registerButton);
-                    if (currentWindow instanceof JFrame) {
-                        currentWindow.dispose();
-                    }
-                });
+                SwingUtilities.invokeLater(() -> new MainFrame(socket).setVisible(true));
             }
         } catch (IOException exception) {
             exception.printStackTrace();

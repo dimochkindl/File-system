@@ -45,7 +45,7 @@ public class Client {
         runClient();
     }
 
-    private void register() {
+/*    private void register() {
         try {
             out.writeUTF("register");
             out.flush();
@@ -58,5 +58,5 @@ public class Client {
         while (loginFrame.isDisplayable()) {
         }
         runClient();
-    }
+    }*/
 }

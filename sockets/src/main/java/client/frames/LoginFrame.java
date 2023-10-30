@@ -74,17 +74,13 @@ public class LoginFrame extends JFrame {
 
         loginButton.addActionListener(e -> performLogin());
 
-        registerButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+        System.out.println("Button is null: " + (registerButton == null));
 
-            Window currentWindow = SwingUtilities.windowForComponent(loginButton);
-            if (currentWindow instanceof JFrame) {
-                currentWindow.dispose();
-            }
-
+        registerButton.addActionListener(e -> {
             RegisterFrame newRegisterFrame = new RegisterFrame(socket, in, out);
-            newRegisterFrame.setVisible(true);
+            SwingUtilities.invokeLater(() -> newRegisterFrame.setVisible(true));
+        });
 
-        }));
     }
 
     private void unknownUser() {
