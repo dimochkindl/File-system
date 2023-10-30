@@ -62,4 +62,63 @@ public class UserAuthenticator {
         return foundPassword.equals(password);
     }
 
+    public boolean registerUser(String email) {
+        Connector connector = new Connector();
+        Connection connection = null;
+        PreparedStatement userInsertStatement = null;
+        PreparedStatement userInfoInsertStatement = null;
+
+        try {
+            connection = connector.getConnection();
+            connection.setAutoCommit(false);
+
+            String userInsertSQL = "INSERT INTO users (id, username, upload_files, download_files) VALUES(?, ?, ?, ?)";
+            String userInfoInsertSQL = "INSERT INTO users_info (user_id, email, password) VALUES (?, ?, ?)";
+
+            userInsertStatement = connection.prepareStatement(userInsertSQL);
+            userInsertStatement.setInt(1, userId);
+            userInsertStatement.setString(2, username);
+            userInsertStatement.setInt(3, 0);
+            userInsertStatement.setInt(4, 0);
+            userInsertStatement.executeUpdate();
+
+            userInfoInsertStatement = connection.prepareStatement(userInfoInsertSQL);
+            userInfoInsertStatement.setInt(1, userId);
+            userInfoInsertStatement.setString(2, email);
+            userInfoInsertStatement.setString(3, password);
+            userInfoInsertStatement.executeUpdate();
+
+            connection.commit();
+            userId++;
+            return true;
+        } catch (SQLException e) {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                }
+            } catch (SQLException rollbackException) {
+                rollbackException.printStackTrace();
+            }
+
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (userInfoInsertStatement != null) {
+                    userInfoInsertStatement.close();
+                }
+                if (userInsertStatement != null) {
+                    userInsertStatement.close();
+                }
+                if (connection != null) {
+                    connection.setAutoCommit(true);
+                    connection.close();
+                }
+            } catch (SQLException closeException) {
+                closeException.printStackTrace();
+            }
+        }
+    }
+
+
 }

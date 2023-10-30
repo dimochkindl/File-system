@@ -63,6 +63,22 @@ public class UserHandler implements Runnable {
     }
 
     private void handleRegister(){
+        try{
+            UserAuthenticator userAuthenticator = new UserAuthenticator(in.readUTF(), in.readUTF());
+            String email = in.readUTF();
+            if (!userAuthenticator.registerUser(email)) {
+                out.writeUTF("fail");
+                out.flush();
+                run();
+            } else {
+                out.writeUTF("success");
+                out.flush();
+                userId = userAuthenticator.getUserId();
+                switchCommands();
+            }
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
 
     }
 

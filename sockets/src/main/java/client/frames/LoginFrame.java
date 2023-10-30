@@ -74,10 +74,17 @@ public class LoginFrame extends JFrame {
 
         loginButton.addActionListener(e -> performLogin());
 
-        registerButton.addActionListener(e -> {
-            dispose();
-            SwingUtilities.invokeLater(() -> new RegisterFrame().setVisible(true));
-        });
+        registerButton.addActionListener(e -> SwingUtilities.invokeLater(() -> {
+
+            Window currentWindow = SwingUtilities.windowForComponent(loginButton);
+            if (currentWindow instanceof JFrame) {
+                currentWindow.dispose();
+            }
+
+            RegisterFrame newRegisterFrame = new RegisterFrame(socket, in, out);
+            newRegisterFrame.setVisible(true);
+
+        }));
     }
 
     private void unknownUser() {

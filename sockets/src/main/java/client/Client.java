@@ -44,4 +44,19 @@ public class Client {
         }
         runClient();
     }
+
+    private void register() {
+        try {
+            out.writeUTF("register");
+            out.flush();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        LoginFrame loginFrame = new LoginFrame(socket, in, out);
+        SwingUtilities.invokeLater(() -> loginFrame.setVisible(true));
+
+        while (loginFrame.isDisplayable()) {
+        }
+        runClient();
+    }
 }
