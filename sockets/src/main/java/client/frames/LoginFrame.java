@@ -76,9 +76,12 @@ public class LoginFrame extends JFrame {
 
         System.out.println("Button is null: " + (registerButton == null));
 
+
         registerButton.addActionListener(e -> {
-            RegisterFrame newRegisterFrame = new RegisterFrame(socket, in, out);
-            SwingUtilities.invokeLater(() -> newRegisterFrame.setVisible(true));
+           performRegister();
+           RegisterFrame frame = new RegisterFrame(socket, in, out);
+           frame.setVisible(true);
+           dispose();
         });
 
     }
@@ -103,5 +106,14 @@ public class LoginFrame extends JFrame {
             exception.printStackTrace();
         }
     }
+
+    private void performRegister() {
+        try {
+            out.writeUTF("register");
+        }catch (IOException ex){
+            ex.printStackTrace();
+        }
+    }
+
 
 }

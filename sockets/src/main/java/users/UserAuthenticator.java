@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserAuthenticator {
     private final String username;
@@ -63,6 +65,8 @@ public class UserAuthenticator {
     }
 
     public boolean registerUser(String email) {
+        getUserID();
+        userId++;
         Connector connector = new Connector();
         Connection connection = null;
         PreparedStatement userInsertStatement = null;
@@ -89,7 +93,6 @@ public class UserAuthenticator {
             userInfoInsertStatement.executeUpdate();
 
             connection.commit();
-            userId++;
             return true;
         } catch (SQLException e) {
             try {
@@ -120,5 +123,37 @@ public class UserAuthenticator {
         }
     }
 
+
+    private void getUserID() {
+        Connector connector = new Connector();
+        Connection connection = null;
+        PreparedStatement userInsertStatement = null;
+        PreparedStatement userInfoInsertStatement = null;
+
+        connection = connector.getConnection();
+        PreparedStatement statement = null;
+        try {
+            String query = "SELECT id FROM users;";
+            statement = connection.prepareStatement(query);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                userId++;
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            System.out.println(ex.getSQLState());
+        } finally {
+            try {
+                if (statement != null)
+                    statement.close();
+                if (connection != null)
+                    connection.close();
+
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
 
 }

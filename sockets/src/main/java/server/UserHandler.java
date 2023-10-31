@@ -3,15 +3,15 @@ package server;
 import server.files_operations.OperationsHandler;
 import users.UserAuthenticator;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class UserHandler implements Runnable {
 
-    private int userId;
-
     private final Socket socket;
-
+    private int userId;
     private DataOutputStream out;
     private DataInputStream in;
 
@@ -29,18 +29,9 @@ public class UserHandler implements Runnable {
     @SuppressWarnings("ReassignedVariable")
     public void run() {
         try {
-            while (true) {
-                String command = in.readUTF();
-                switch (command) {
-                    case "login": {
-                        handleLogin();
-                        break;
-                    }
-                    case "register": {
-                        handleRegister();
-                        break;
-                    }
-                }
+            String command = in.readUTF();
+            if (command.equals("login")) {
+                handleLogin();
             }
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -49,7 +40,11 @@ public class UserHandler implements Runnable {
     }
 
     private void handleLogin() throws IOException {
-        UserAuthenticator userAuthenticator = new UserAuthenticator(in.readUTF(), in.readUTF());
+        String register = in.readUTF();
+        if(register.equals("register")){
+            handleRegister();
+        }
+        UserAuthenticator userAuthenticator = new UserAuthenticator(register, in.readUTF());
         if (!userAuthenticator.checkUser()) {
             out.writeUTF("unknown");
             out.flush();
@@ -62,8 +57,8 @@ public class UserHandler implements Runnable {
         }
     }
 
-    private void handleRegister(){
-        try{
+    private void handleRegister() {
+        try {
             UserAuthenticator userAuthenticator = new UserAuthenticator(in.readUTF(), in.readUTF());
             String email = in.readUTF();
             if (!userAuthenticator.registerUser(email)) {
@@ -76,14 +71,14 @@ public class UserHandler implements Runnable {
                 userId = userAuthenticator.getUserId();
                 switchCommands();
             }
-        }catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
 
     }
 
     private void switchCommands() throws IOException {
-        OperationsHandler handler = new OperationsHandler(in,out, userId, socket);
+        OperationsHandler handler = new OperationsHandler(in, out, userId, socket);
         while (true) {
             String command = in.readUTF();
             if ("upload".equals(command)) {
@@ -101,10 +96,10 @@ public class UserHandler implements Runnable {
             if ("delete".equals(command)) {
                 handler.delete();
             }
-            if("showFilesList".equals(command)){
+            if ("showFilesList".equals(command)) {
                 handler.showServerFilesList();
             }
-            if("update".equals(command)){
+            if ("update".equals(command)) {
                 handler.update();
             }
         }

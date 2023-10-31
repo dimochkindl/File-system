@@ -84,7 +84,6 @@ public class RegisterFrame extends JFrame {
 
     private void performRegister() {
         try {
-            out.writeUTF("register");
             out.writeUTF(usernameField.getText());
             out.writeUTF(passwordField.getText());
             out.writeUTF(emailField.getText());
@@ -94,6 +93,7 @@ public class RegisterFrame extends JFrame {
                 Error();
             } else if (answer.equals("success")) {
                 SwingUtilities.invokeLater(() -> new MainFrame(socket).setVisible(true));
+                dispose();
             }
         } catch (IOException exception) {
             exception.printStackTrace();
